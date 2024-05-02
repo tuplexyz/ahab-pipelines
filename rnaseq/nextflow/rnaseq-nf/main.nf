@@ -49,8 +49,7 @@ include { MULTIQC } from './modules/multiqc'
  * main script flow
  */
 workflow {
-  // read_pairs_ch = channel.fromFilePairs( params.reads, checkIfExists: true ) 
-  read_pairs_ch = channel.fromFilePairs( params.reads ) 
+  read_pairs_ch = channel.fromFilePairs( params.reads, checkIfExists: true )
   RNASEQ( params.transcriptome, read_pairs_ch )
   MULTIQC( RNASEQ.out, params.multiqc )
 }

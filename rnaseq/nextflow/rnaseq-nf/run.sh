@@ -10,6 +10,10 @@ export reads=$(echo $job_json | jq -r '.inputs.reads')
 export outdir=$(echo $job_json | jq -r '.inputs.outdir')
 export multiqc=$PWD/multiqc
 
+## Make output directory
+echo "Making output directory..."
+mkdir -p $outdir
+
 echo "Running Nextflow pipeline..."
 nextflow run .
 

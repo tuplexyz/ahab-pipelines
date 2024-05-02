@@ -8,12 +8,12 @@ spec:
   - name: rnaseq
     image: tuplexyz/ahab-rnaseq-nf:v1.2.1
     volumeMounts:
-        - name: datalake01
-          mountPath: "/mnt/datalake"
-          readOnly: false
-        - name: ahabstorage
-          mountPath: "/mnt/ahab"
-          readOnly: false
+      - name: datalake01
+        mountPath: "/mnt/datalake"
+        readOnly: false
+      - name: ahabstorage
+        mountPath: "/mnt/ahab"
+        readOnly: false
     env:
       - name: AHAB_API_URL
         valueFrom:
@@ -25,19 +25,21 @@ spec:
           secretKeyRef:
             name: ahabconfig
             key: AHAB_API_KEY
-    command: [ "/bin/bash", "-c", "--" ]
-    args: [ "while true; do sleep 30; done;" ]
+    command: ["/bin/bash", "-c"]
+    args: ["./run.sh"]
+    # command: [ "/bin/bash", "-c", "--" ]
+    # args: [ "while true; do sleep 30; done;" ]
     # resources:
     #   limits:
     #     memory: "2Gi"
     #     cpu: "200m"
   tolerations:
-  - key: "pipeline"
+  - key: "job_type"
     operator: "Equal"
     value: "rnaseq"
     effect: "NoSchedule"
   nodeSelector:
-    pipeline: rnaseq
+    job_type: rnaseq
   volumes:
     - name: datalake01
       persistentVolumeClaim:
