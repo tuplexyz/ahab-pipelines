@@ -19,10 +19,10 @@ nextflow run .
 
 if [ $? -eq 0 ]; then
     echo "Nextflow pipeline completed. Updating ahab job status..."
-    ahab job update --id $id --status "COMPLETE" --body '{"outputs": {"results": "/mnt/datalake/samples/ggal/results"}}'
+    ahab job update --id $id --status "COMPLETE" --body '{"outputs": {"results": "/mnt/datalake/samples/ggal/'${outdir}'"}}'
 else
     echo "Nextflow pipeline failed. Updating ahab job status..."
-    ahab job update --id $id --status "FAILED" --body '{"outputs": {"results": "/mnt/datalake/samples/ggal/results"}}'
+    ahab job update --id $id --status "FAILED" --body '{"outputs": {"results": "/mnt/datalake/samples/ggal/'${outdir}'"}}'
 fi
 
 
