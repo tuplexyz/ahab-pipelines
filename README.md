@@ -8,3 +8,6 @@ Pipeline templates to be run as jobs in the _ahab_ cloud API and Kubernetes syst
 
 - Nextflow RNA-seq: [rnaseq/nextflow/rnaseq-nf](rnaseq/nextflow/rnaseq-nf)
 - Snakemake Genome: [genome/snakemake/wgs-tutorial](genome/snakemake/wgs-tutorial/)
+
+## Contributing
+We invite you to contribute to the _ahab_ project. If you have a pipeline that you'd like to share, make a pull request to this repository.
