@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: wgs-snakemake-test-00
+spec:
+  restartPolicy: Never
+  containers:
+  - name: wgs
+    image: tuplexyz/ahab-snakemake-wgs-tutorial:v8.13.0
+    volumeMounts:
+      - name: datalake01
+        mountPath: "/mnt/datalake"
+        readOnly: false
+      - name: ahabstorage
+        mountPath: "/mnt/ahab"
+        readOnly: false
+    env:
+      - name: AHAB_API_URL
+        valueFrom:
+          secretKeyRef:
+            name: ahabconfig
+            key: AHAB_API_URL
+      - name: AHAB_API_KEY
+        valueFrom:
+          secretKeyRef:
+            name: ahabconfig
+            key: AHAB_API_KEY
+    command: ["/bin/bash", "-c"]
+    args: ["./run.sh"]
+    # command: [ "/bin/bash", "-c", "--" ]
+    # args: [ "while true; do sleep 30; done;" ]
+    # resources:
+    #   limits:
+    #     memory: "2Gi"
+    #     cpu: "200m"
+  tolerations:
+  - key: "job_type"
+    operator: "Equal"
+    value: "wgs"
+    effect: "NoSchedule"
+  nodeSelector:
+    job_type: wgs
+  volumes:
+    - name: datalake01
+      persistentVolumeClaim:
+        claimName: pvc-datalake-blob
+    - name: ahabstorage
+      persistentVolumeClaim:
+        claimName: pvc-ahab-storage-blob

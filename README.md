@@ -7,3 +7,4 @@ Pipeline templates to be run as jobs in the _ahab_ cloud API and Kubernetes syst
 ## Example Pipelines
 
 - Nextflow RNA-seq: [rnaseq/nextflow/rnaseq-nf](rnaseq/nextflow/rnaseq-nf)
+- Snakemake Genome: [genome/snakemake/wgs-tutorial](genome/snakemake/wgs-tutorial/)
