@@ -4,18 +4,18 @@ This pipeline is based on the example [`nextflow-nf`](https://github.com/nextflo
 
 ## Build the Docker image
 ```bash
-docker build -t tuplexyz/ahab-rnaseq-nf:v1.2.1 .
+docker build --platform linux/amd64 -t tuplexyz/ahab-rnaseq-nf:v1.2.2 .
 ```
 
 ## Running the pipeline in the image locally
 (Using a volume to simulate the data lake connection.)
 ```bash
-docker run -v $pwd/data:/mnt/datalake --rm -it --entrypoint bash --name ahab-rnaseq-nf tuplexyz/ahab-rnaseq-nf:v1.2.1
+docker run -v $pwd/data:/mnt/datalake --rm -it --entrypoint bash --name ahab-rnaseq-nf tuplexyz/ahab-rnaseq-nf:v1.2.2
 ```
 
 ## Push to Container Registry
 ```bash
-docker push tuplexyz/ahab-rnaseq-nf:v1.2.1
+docker push tuplexyz/ahab-rnaseq-nf:v1.2.2
 ```
 
 ## Applying a pod manually for testing

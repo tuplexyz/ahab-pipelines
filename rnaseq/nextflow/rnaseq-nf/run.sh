@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
 echo "Grabbing a rnaseq job via the ahab CLI..."
 export job_json=$(ahab job get --job_type rnaseq)

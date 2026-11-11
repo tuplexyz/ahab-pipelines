@@ -32,4 +32,5 @@ RUN cd /bin && \
 ## Copy pipeline files into image
 RUN mkdir /pipeline
 COPY . /pipeline
+RUN chmod +x /pipeline/run.sh
 WORKDIR /pipeline
