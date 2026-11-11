@@ -6,7 +6,7 @@ spec:
   restartPolicy: Never
   containers:
   - name: rnaseq
-    image: tuplexyz/ahab-rnaseq-nf:v1.2.1
+    image: tuplexyz/ahab-rnaseq-nf:v1.2.2
     volumeMounts:
       - name: datalake01
         mountPath: "/mnt/datalake"
