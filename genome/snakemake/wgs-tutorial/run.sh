@@ -1,27 +1,52 @@
-#/bin/bash
+#!/bin/bash
+
+set -o pipefail
 
 echo "Grabbing a wgs job via the ahab CLI..."
-export job_json=$(ahab job get --job_type wgs)
-export id=$(echo $job_json | jq -r '.id')
+if ! job_json=$(ahab job get --job_type wgs); then
+    echo "Failed to retrieve a WGS job." >&2
+    exit 1
+fi
+if ! id=$(jq -er '.id | select(type == "string" and length > 0)' <<< "$job_json"); then
+    echo "Job response has no valid id." >&2
+    exit 1
+fi
+
+update_status() {
+    local status="$1" body response
+    body=$(jq -nc --arg outdir "${outdir:-}" '{outputs: {results: $outdir}}') || return 1
+    if ! response=$(ahab job update --id "$id" --status "$status" --body "$body"); then
+        echo "Failed to update job status to $status." >&2
+        return 1
+    fi
+    echo "$response"
+    jq -e --arg id "$id" --arg status "$status" \
+        '.id == $id and .status == $status' <<< "$response" >/dev/null
+}
 
 ## Input Parameters
-export inputdir=$(echo $job_json | jq -r '.inputs.inputdir')
-export outdir=$(echo $job_json | jq -r '.inputs.outdir')
-# export inputdir="/mnt/datalake/samples/wgs-tutorial/"
-# export outdir="/mnt/datalake/samples/wgs-tutorial/output/"
-export ncores=$(nproc)
+if ! inputdir=$(jq -er '.inputs.inputdir // "/mnt/datalake/samples/sm_wgs/inputs" | select(type == "string" and length > 0)' <<< "$job_json") ||
+   ! outdir=$(jq -er '.inputs.outdir | select(type == "string" and length > 0)' <<< "$job_json"); then
+    echo "Job response is missing required WGS inputs." >&2
+    update_status FAILED || true
+    exit 1
+fi
 
 ## Make output directory
 echo "Making output directory..."
-mkdir -p $outdir
+if ! mkdir -p -- "$outdir"; then
+    echo "Failed to create output directory." >&2
+    update_status FAILED || true
+    exit 1
+fi
 
 echo "Running Snakemake pipeline..."
-snakemake --cores ${ncores} --config inputdir=${inputdir} outdir=${outdir}
-
-if [ $? -eq 0 ]; then
+if snakemake --cores 1 --config "inputdir=$inputdir" "outdir=$outdir"; then
     echo "Snakemake pipeline completed. Updating ahab job status..."
-    ahab job update --id $id --status "COMPLETE" --body '{"outputs": {"results": "'${outdir}'"}}'
+    update_status COMPLETE || exit 1
 else
+    pipeline_status=$?
     echo "Snakemake pipeline failed. Updating ahab job status..."
-    ahab job update --id $id --status "FAILED" --body '{"outputs": {"results": "'${outdir}'"}}'
+    update_status FAILED || true
+    exit "$pipeline_status"
 fi
