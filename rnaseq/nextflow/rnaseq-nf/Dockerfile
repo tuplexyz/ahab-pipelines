@@ -13,6 +13,7 @@ RUN \
    && micromamba clean -a -y
 
 ENV PATH="$MAMBA_ROOT_PREFIX/bin:$PATH"
+ENV NXF_VER=26.10.5
 USER root
 
 ## New stuff for ahab...
@@ -32,5 +33,5 @@ RUN cd /bin && \
 ## Copy pipeline files into image
 RUN mkdir /pipeline
 COPY . /pipeline
-RUN chmod +x /pipeline/run.sh
+RUN chmod +x /pipeline/run.sh /pipeline/bin/*.sh
 WORKDIR /pipeline

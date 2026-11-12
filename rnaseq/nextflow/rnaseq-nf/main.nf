@@ -28,11 +28,6 @@ nextflow.enable.dsl = 2
 
 // These data come from: https://github.com/nextflow-io/rnaseq-nf/tree/master/data/ggal
 
-params.transcriptome = "$transcriptome"
-params.reads = "$reads"
-params.outdir = "$outdir"
-params.multiqc = "$multiqc"
-
 log.info """\
  R N A S E Q - N F   P I P E L I N E
  ===================================
